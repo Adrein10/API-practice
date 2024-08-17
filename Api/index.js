@@ -20,6 +20,7 @@ for(var i = 0;i <= apidata.length - 1; i++){
 
    // create element
    var tr = document.createElement('tr');
+   tr.className = "table"
    var td1 = document.createElement('td');
    var td2 = document.createElement('td');
    var td3 = document.createElement('td');
