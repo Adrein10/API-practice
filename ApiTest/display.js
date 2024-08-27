@@ -1,4 +1,10 @@
-async function myapi(){
+var alertform = document.getElementById("formalert");
+
+alertform ?
+
+    (alertform.style.display = 'none') : ""
+
+async function myapi() {
     var api = await fetch('https://66c07bf0ba6f27ca9a56ca23.mockapi.io/mypractice/users');
     var data = await api.json();
     tolist(data);
@@ -7,7 +13,7 @@ async function myapi(){
 
 myapi();
 
-function tolist(fetchdata){
+function tolist(fetchdata) {
     fetchdata.forEach(myapi => {
         // Create table row and cells
         var tr = document.createElement("tr");
@@ -19,16 +25,17 @@ function tolist(fetchdata){
         var btn1 = document.createElement('a');
         btn1.innerText = 'Edit';
         btn1.className = "btn btn-success";
+        btn1.href = `Edit.html?basit=${myapi.id}`;
         btn1.id = "editbtn"
-        btn1.onclick = function(){
+        btn1.onclick = function () {
             edituser(myapi.id);
         }
         var btn2 = document.createElement('a');
         btn2.innerText = 'Delete';
         btn2.className = "btn btn-danger";
         btn2.id = "deletebtn";
-        btn2.onclick = function(){
-            deleteuser(myapi.id);
+        btn2.onclick = function () {
+            deleteUser(myapi.id);
         }
 
 
@@ -52,12 +59,63 @@ function tolist(fetchdata){
     });
 }
 async function deleteUser(userid) {
-    const response = await fetch('https://66c07bf0ba6f27ca9a56ca23.mockapi.io/mypractice/users');
-    const records = await response.json();
-    const updatedRecords = records.filter(item => item.id == userid);
-    console.log(updatedRecords);
-    // If you want to update the records on the server, you'll need to make a PUT request
-  }
-function edituser(userid){
-    alert(`${userid} edited successfully`);
+    console.log(userid);
+    const response = await fetch(`https://66c07bf0ba6f27ca9a56ca23.mockapi.io/mypractice/users/${userid}`, {
+        method: 'DELETE',
+    });
+    window.location.href = "display.html";
+
+}
+
+async function edituser() {
+    var search = new URLSearchParams(window.location.search);
+
+
+
+    var valuesss = search.get('basit');
+    const users = await fetch(`https://66c07bf0ba6f27ca9a56ca23.mockapi.io/mypractice/users/${valuesss}`);
+
+    console.log(users.json());
+}
+
+// create user
+
+
+async function create() {
+    var studentname = document.getElementById("name").value;
+    var studentemail = document.getElementById("email").value;
+    var studentpassword = document.getElementById("password").value;
+
+    if (studentemail == "" || studentpassword == "" || studentname == "") {
+        alertform.style.display = 'block';
+        alertform.className = 'alert alert-danger'
+        alertform.innerHTML = "All fields are required";
+    } else {
+        const newuser = {
+            Name: studentname,
+            Email: studentemail,
+            Password: studentpassword,
+        };
+
+        try {
+            const response = await fetch('https://66c07bf0ba6f27ca9a56ca23.mockapi.io/mypractice/users', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(newuser),
+            });
+            const data = await response.json();
+            console.log(data);
+            alertform.style.display = 'block';
+            alertform.className = 'alert alert-success'
+            alertform.innerHTML = "User created successfully";
+        } catch (error) {
+            console.error('Error:', error);
+            alertform.style.display = 'block';
+            alertform.className = 'alert alert-danger'
+            alertform.innerHTML = "Error creating user";
+        }
+    }
+    window.location.href = "display.html";
 }
