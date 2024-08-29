@@ -67,6 +67,28 @@ async function deleteUser(userid) {
 
 }
 
+async function updateRecordGet(){
+    var search = new URLSearchParams(window.location.search);
+
+
+
+    var valuesss = search.get('basit');
+    const users = await fetch(`https://66c07bf0ba6f27ca9a56ca23.mockapi.io/mypractice/users/${valuesss}`);
+
+  const userdata = users.json();
+
+console.log(userdata);
+    var name = document.getElementById('Uname');
+    name.value = userdata.Name;
+    var email = document.getElementById('Uemail');
+    email.value = userdata.Email;
+    var password = document.getElementById('Upassword');
+    password.value = userdata.Password;
+
+}
+
+
+
 async function edituser() {
     var search = new URLSearchParams(window.location.search);
 
@@ -76,6 +98,29 @@ async function edituser() {
     const users = await fetch(`https://66c07bf0ba6f27ca9a56ca23.mockapi.io/mypractice/users/${valuesss}`);
 
     console.log(users.json());
+
+
+    var name = document.getElementById('Uname').value;
+    name.value = users.Name;
+    var email = document.getElementById('Uemail').value;
+    email.value = users.Email;
+    var password = document.getElementById('Upassword').value;
+    password.value = users.Password;
+
+
+
+    const response = await fetch(`https://66c07bf0ba6f27ca9a56ca23.mockapi.io/mypractice/users/${valuesss}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            Name: name,
+            Email: email,
+            Password: password,
+        }),
+    });
+    window.location.href = "display.html";
 }
 
 // create user
